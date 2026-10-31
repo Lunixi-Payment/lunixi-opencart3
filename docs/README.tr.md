@@ -2,16 +2,16 @@
 
 # OpenCart 3 için Lunixi Payments
 
-**0.1.1**, özgün **OpenCart 3.0.5.1** sipariş modeli için hazırlanmış yerel ödeme eklentisidir. 64 bit PHP **8.3+**, BCMath, cURL, JSON, Sodium, MySQLi ve tüm mağaza tablolarında **InnoDB** gerekir. Paket, ad alanı ayrılmış PHP SDK **0.29.3** içerir; mağazada Composer gerekmez.
+**0.1.2**, özgün **OpenCart 3.0.5.1** sipariş modeli için hazırlanmış yerel ödeme eklentisidir. 64 bit PHP **8.3+**, BCMath, cURL, JSON, Sodium, MySQLi ve tüm mağaza tablolarında **InnoDB** gerekir. Paket, ad alanı ayrılmış PHP SDK **0.29.5** içerir; mağazada Composer gerekmez.
 
 ## Kurulum
 
 1. Dosya/veritabanı yedeği alın ve önce staging ortamında deneyin. OpenCart 3 varsayılan MyISAM tablolarını operatör onaylı bakım çalışmasıyla InnoDB yapmadan modülü açmayın; modül otomatik dönüşüm yapmaz.
 2. `php -r 'echo base64_encode(random_bytes(32)), PHP_EOL;'` ile ayrı sunucu anahtarı oluşturun. `LUNIXI_OPENCART_ENCRYPTION_KEY` ortam değişkenini web PHP ve CLI için tanımlayın; web kökü/veritabanı dışında saklayıp ayrıca yedekleyin.
-3. **`lunixi-opencart3-0.1.1.ocmod.zip`** dosyasını **Eklentiler → Yükleyici** üzerinden yükleyin, ardından **Ödemeler → Lunixi Payments** kurulumunu yapın. Paket çekirdek dosyalarını değiştirmez.
+3. **`lunixi-opencart3-0.1.2.ocmod.zip`** dosyasını **Eklentiler → Yükleyici** üzerinden yükleyin, ardından **Ödemeler → Lunixi Payments** kurulumunu yapın. Paket çekirdek dosyalarını değiştirmez.
 4. Yöneticiye eklentiyi görme/değiştirme; tahsilat, iade ve iptal için ayrıca `sale/order` değiştirme yetkisi verin.
 5. Lunixi ayarlarında mağazayı seçin. Merchant ID, Key ID, Ed25519 özel anahtarı ve webhook secret alanlarını doldurun. Anahtarlar şifreli saklanır; sayfa tekrar açıldığında boş kalır. Boş alanlar kayıtlı profili korur. Her mağazaya ayrı profil kullanın.
-6. **Gömülü form** veya **pay.lunixi.com yönlendirmesi**, isteğe bağlı ön provizyon seçin. Ödeme yöntemleri, uygun yemek kartları, alışveriş kredisi, taksit, sigorta ve çoklu kart Lunixi panelindeki form ayarlarından gelir; burada tekrar seçilmez.
+6. Varsayılan **mağaza içi formu** kullanın veya backend ödeme adresine isteğe bağlı yönlendirmeyi seçin; ön provizyon ayrıca ayarlanabilir. Ödeme yöntemleri, uygun yemek kartları, alışveriş kredisi, taksit, sigorta ve çoklu kart Lunixi panelindeki form ayarlarından gelir; burada tekrar seçilmez.
 7. Modül ayrı bekleyen/ön provizyon/inceleme durumları oluşturur. Yalnız ödenmiş durumunu OpenCart işleme/tamamlandı kümesine eşleyin; diğer durumlar bu kümelerin dışında kalmalıdır. Ön provizyon ve kısmi tahsilat ürün teslimini başlatmaz.
 8. Ekrandaki HTTPS webhook adresini Lunixi paneline kaydedin: `https://magaza.example/index.php?route=extension/payment/lunixi/webhook`. Proxy ham gövdeyi ve `X-Lunixi-*` başlıklarını korumalıdır.
 9. Aşağıdaki görevi her dakika ve her mağaza için çalıştırıp sonra modülü etkinleştirin.
@@ -53,3 +53,9 @@ Finansal sonucu belirsiz işlemler incelemede tutulur. `FAILED` tek başına yen
 Lunixi yönlendirmeli, çoklu kart ve 3DS akışları üretilen `returned` adresine **POST** ile döner. Yalnız bu bilgilendirici dönüş ucu oturum/CSRF token olmadan POST kabul eder: form gövdesinin tamamını yok sayıp özgün dönüş URL'sindeki sayısal `order_id` ile aynı sitedeki göreli GET adresine **303** döner. Ödeme sorgulamaz, sipariş verisi göstermez ve finansal kayıt değiştirmez. GET aşamasında yerel oturum/müşteri/mağaza/sipariş sahipliği ve kimlik doğrulamalı ödeme sorgusu korunur. Checkout/yönetici POST korumaları devam eder; tarayıcının başarı alanları ödeme kanıtı değildir.
 
 Uygulama dönüşün bildirilen gövdesi **64 KiB** üzerindeyse reddeder. HTTPS proxy'de bu uç için chunked istekleri de kapsayan aynı ağ gövdesi sınırını uygulayın; imzalı webhook'un ayrı 1 MiB sınırını koruyun. Dönüşü checkout/confirm POST adresine çevirmeyin, GET sahiplik kontrolünü kaldırmayın.
+
+## Form modu ve mevcut ödeme denemeleri
+
+Varsayılan, mağaza içinde açılan gömülü Lunixi formudur. İsteğe bağlı yönlendirme, backend'in döndürdüğü doğrulanmış `paymentPageUrl` adresini birebir kullanır. İki mod da aynı formu açar; açık yöntemler, çoklu kart, taksit ve sigorta Lunixi panelinden yönetilir ve yönlendirme gerektirmez. Tarayıcı token'ından ödeme sayfası adresi üretilmez.
+
+Önceden açıkça seçilmiş yönlendirme ayarları korunur. Form modu, dönüş adresi, ön provizyon ve dil özgün ödeme isteğine bağlıdır; değiştirmek denemenin hash veya idempotency anahtarını sıfırlayamaz. Eski bir denemede backend ödeme adresi kayıtlı değilse yönlendirme güvenli biçimde durur; adres üretmek, geçmişi silmek veya yeni anahtar açmak yerine mevcut denemeyi uzlaştırın. Gömülü form korumalı tarayıcı yapılandırmasını kullanır. İmzalı webhook, doğrulanmış tahsilat kontrolleri ve bilgilendirici 3DS/çoklu kart dönüşleri korunur.

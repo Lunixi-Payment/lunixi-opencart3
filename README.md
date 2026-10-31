@@ -2,6 +2,10 @@
 
 # Lunixi Payments for OpenCart 3
 
+**Verified public merchant ZIP 0.1.2:** [`lunixi-opencart3-0.1.2.ocmod.zip`](https://github.com/Lunixi-Payment/lunixi-opencart3/releases/download/v0.1.2/lunixi-opencart3-0.1.2.ocmod.zip) · [SHA256SUMS](https://github.com/Lunixi-Payment/lunixi-opencart3/releases/download/v0.1.2/SHA256SUMS) · [Release v0.1.2](https://github.com/Lunixi-Payment/lunixi-opencart3/releases/tag/v0.1.2). The CI-built installation package was downloaded and verified on 2026-10-31. Use this asset rather than GitHub's automatic source archive.
+
+Public CI ZIP SHA256: `715973a2a53405ef42442a7ea763a57e470f377af362c527b297bf81092d1b1f`.
+
 Native payment extension **0.1.2** for **OpenCart 3.0.5.1**. Opens the existing Lunixi form on the merchant website by default, with optional redirect to the validated backend `paymentPageUrl`. Payment methods, eligible meal cards, shopping credit, installments, insurance and multi-card availability remain managed in the Lunixi merchant panel and form. This adapter does not collect card numbers/CVV or duplicate payment-method switches.
 
 [Turkish guide](docs/README.tr.md) · [Documentation](https://docs.lunixi.com/en/sdks/opencart3) · [Source](https://github.com/Lunixi-Payment/lunixi-opencart3)

@@ -2,13 +2,13 @@
 
 # OpenCart 3 için Lunixi Payments
 
-**0.1.0**, özgün **OpenCart 3.0.5.1** sipariş modeli için hazırlanmış yerel ödeme eklentisidir. 64 bit PHP **8.3+**, BCMath, cURL, JSON, Sodium, MySQLi ve tüm mağaza tablolarında **InnoDB** gerekir. Paket, ad alanı ayrılmış PHP SDK **0.29.3** içerir; mağazada Composer gerekmez.
+**0.1.1**, özgün **OpenCart 3.0.5.1** sipariş modeli için hazırlanmış yerel ödeme eklentisidir. 64 bit PHP **8.3+**, BCMath, cURL, JSON, Sodium, MySQLi ve tüm mağaza tablolarında **InnoDB** gerekir. Paket, ad alanı ayrılmış PHP SDK **0.29.3** içerir; mağazada Composer gerekmez.
 
 ## Kurulum
 
 1. Dosya/veritabanı yedeği alın ve önce staging ortamında deneyin. OpenCart 3 varsayılan MyISAM tablolarını operatör onaylı bakım çalışmasıyla InnoDB yapmadan modülü açmayın; modül otomatik dönüşüm yapmaz.
 2. `php -r 'echo base64_encode(random_bytes(32)), PHP_EOL;'` ile ayrı sunucu anahtarı oluşturun. `LUNIXI_OPENCART_ENCRYPTION_KEY` ortam değişkenini web PHP ve CLI için tanımlayın; web kökü/veritabanı dışında saklayıp ayrıca yedekleyin.
-3. **`lunixi-opencart3-0.1.0.ocmod.zip`** dosyasını **Eklentiler → Yükleyici** üzerinden yükleyin, ardından **Ödemeler → Lunixi Payments** kurulumunu yapın. Paket çekirdek dosyalarını değiştirmez.
+3. **`lunixi-opencart3-0.1.1.ocmod.zip`** dosyasını **Eklentiler → Yükleyici** üzerinden yükleyin, ardından **Ödemeler → Lunixi Payments** kurulumunu yapın. Paket çekirdek dosyalarını değiştirmez.
 4. Yöneticiye eklentiyi görme/değiştirme; tahsilat, iade ve iptal için ayrıca `sale/order` değiştirme yetkisi verin.
 5. Lunixi ayarlarında mağazayı seçin. Merchant ID, Key ID, Ed25519 özel anahtarı ve webhook secret alanlarını doldurun. Anahtarlar şifreli saklanır; sayfa tekrar açıldığında boş kalır. Boş alanlar kayıtlı profili korur. Her mağazaya ayrı profil kullanın.
 6. **Gömülü form** veya **pay.lunixi.com yönlendirmesi**, isteğe bağlı ön provizyon seçin. Ödeme yöntemleri, uygun yemek kartları, alışveriş kredisi, taksit, sigorta ve çoklu kart Lunixi panelindeki form ayarlarından gelir; burada tekrar seçilmez.
@@ -47,3 +47,9 @@ Yayımlanmamış ortak SDK'yı test etmek için yalnız derleme sırasında `SDK
 Eklenti GPL-3.0-or-later, paketlenen PHP SDK MIT lisanslıdır.
 
 Finansal sonucu belirsiz işlemler incelemede tutulur. `FAILED` tek başına yeni denemeye izin vermez; herkese açık ödeme sorgusu kesin sağlayıcı sonuç kanıtını döndürmez. Sonuçlanmamış finansal tekrarlar 23 saat sonra durur; kimliği doğrulanmış GET mutabakatı devam eder. Zaman aşımı, form token süresi veya tarayıcı dönüşü yeni finansal anahtar üretmez.
+
+## Sağlayıcı tarayıcı dönüşü
+
+Lunixi yönlendirmeli, çoklu kart ve 3DS akışları üretilen `returned` adresine **POST** ile döner. Yalnız bu bilgilendirici dönüş ucu oturum/CSRF token olmadan POST kabul eder: form gövdesinin tamamını yok sayıp özgün dönüş URL'sindeki sayısal `order_id` ile aynı sitedeki göreli GET adresine **303** döner. Ödeme sorgulamaz, sipariş verisi göstermez ve finansal kayıt değiştirmez. GET aşamasında yerel oturum/müşteri/mağaza/sipariş sahipliği ve kimlik doğrulamalı ödeme sorgusu korunur. Checkout/yönetici POST korumaları devam eder; tarayıcının başarı alanları ödeme kanıtı değildir.
+
+Uygulama dönüşün bildirilen gövdesi **64 KiB** üzerindeyse reddeder. HTTPS proxy'de bu uç için chunked istekleri de kapsayan aynı ağ gövdesi sınırını uygulayın; imzalı webhook'un ayrı 1 MiB sınırını koruyun. Dönüşü checkout/confirm POST adresine çevirmeyin, GET sahiplik kontrolünü kaldırmayın.

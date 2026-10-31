@@ -2,7 +2,7 @@
 
 # Lunixi Payments for OpenCart 3
 
-Native payment extension **0.1.0** for **OpenCart 3.0.5.1**. Uses the embedded Lunixi payment form or redirects to `https://pay.lunixi.com/payment/<token>`. Payment methods, eligible meal cards, shopping credit, installments, insurance and multi-card availability remain managed in the Lunixi merchant panel and form. This adapter does not collect card numbers/CVV or duplicate payment-method switches.
+Native payment extension **0.1.1** for **OpenCart 3.0.5.1**. Uses the embedded Lunixi payment form or redirects to `https://pay.lunixi.com/payment/<token>`. Payment methods, eligible meal cards, shopping credit, installments, insurance and multi-card availability remain managed in the Lunixi merchant panel and form. This adapter does not collect card numbers/CVV or duplicate payment-method switches.
 
 [Turkish guide](docs/README.tr.md) · [Documentation](https://docs.lunixi.com/en/sdks/opencart3) · [Source](https://github.com/Lunixi-Payment/lunixi-opencart3)
 
@@ -24,7 +24,7 @@ Compatibility preflight rejects a different platform version, modified native or
 1. Back up files, database and server encryption key; test on staging.
 2. OpenCart 3 defaults to MyISAM. Complete the operator-reviewed transactional migration in [database preparation](docs/OPERATIONS.md) before enabling payments. The extension never converts production tables.
 3. Generate a separate encryption key locally: `php -r 'echo base64_encode(random_bytes(32)), PHP_EOL;'`. Configure `LUNIXI_OPENCART_ENCRYPTION_KEY` in PHP-FPM **and** the CLI worker environment, outside the web root/database. Back up this key separately.
-4. Upload **`lunixi-opencart3-0.1.0.ocmod.zip`** through **Extensions → Installer**, then install **Lunixi Payments** under **Extensions → Payments**. The ZIP uses the native upload/ layout and does not modify core files. Merchants do not need Composer.
+4. Upload **`lunixi-opencart3-0.1.1.ocmod.zip`** through **Extensions → Installer**, then install **Lunixi Payments** under **Extensions → Payments**. The ZIP uses the native upload/ layout and does not modify core files. Merchants do not need Composer.
 5. Give the intended administrator access/modify permission to `extension/payment/lunixi`. Capture/refund/void also require modify permission to `sale/order`.
 6. Edit Lunixi Payments; select the native store, enter merchant ID, key ID, Ed25519 private key and webhook secret. Secret fields stay blank on reload; blank values retain the encrypted store-specific credential profile. Never share credentials between stores.
 7. Choose embedded or hosted checkout and optional preauthorization. Installation creates separate localized awaiting/authorized/review statuses outside native processing/complete sets. Map **paid** to a processing/complete status; all other mappings must be outside those sets. Preauthorization and partial capture remain on hold.
@@ -72,3 +72,9 @@ The build pins SDK 0.29.3 and bundles a scoped copy. If testing an unreleased pu
 License: GPL-3.0-or-later for this native extension; bundled SDK retains its MIT license. [Security policy](SECURITY.md).
 
 Financial outcomes that remain uncertain are held for review. `FAILED` alone does not authorize a new attempt: the public payment read does not expose definitive provider outcome certainty. Unresolved financial retries stop after 23 hours; authenticated GET reconciliation remains available. A timeout, token expiry or browser callback never generates a fresh financial key.
+
+## Provider browser return
+
+Lunixi hosted, split and 3DS flows return by **POST** to the generated `returned` route. This route alone accepts an informational cross-site POST without a session/CSRF token: it ignores the complete form body and immediately sends **303** to a relative same-origin GET of that route, keeping only the numeric `order_id` from the original callback URL. It does not fetch a payment, disclose order data or change financial state. The GET retains native session/customer/store/order ownership and authenticated payment reconciliation. Checkout/admin POST protections remain required; browser success fields never prove payment.
+
+The application rejects declared callback bodies above **64 KiB**. Configure the HTTPS reverse proxy to enforce the same wire-body limit on this route, including chunked requests; keep the signed webhook's separate 1 MiB limit. Do not convert the callback to a checkout/confirm POST or remove ownership checks from GET.

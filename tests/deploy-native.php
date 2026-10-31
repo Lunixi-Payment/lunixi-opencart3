@@ -6,7 +6,7 @@ if (!is_string($site) || !is_file($site . '/config.php')) {
     throw new RuntimeException('Disposable installed fixture required.');
 }
 $zip = new ZipArchive();
-if ($zip->open(dirname(__DIR__) . '/dist/lunixi-opencart3-0.1.2.ocmod.zip') !== true) {
+if ($zip->open(dirname(__DIR__) . '/dist/lunixi-opencart3-0.1.3.ocmod.zip') !== true) {
     throw new RuntimeException('Build the merchant artifact first.');
 }
 for ($i = 0; $i < $zip->numFiles; $i++) {

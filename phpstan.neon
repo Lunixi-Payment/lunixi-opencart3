@@ -1,0 +1,22 @@
+parameters:
+    level: 5
+    dynamicConstantNames:
+        - VERSION
+    paths:
+        - upload/system/library/lunixi3/src
+        - upload/admin/controller/extension/payment
+        - upload/catalog/controller/extension/payment
+        - upload/catalog/model/extension/payment
+    stubFiles:
+        - tests/native-registry.stub
+    bootstrapFiles:
+        - tests/phpstan-bootstrap.php
+    scanDirectories:
+        - %env.OPENCART_SOURCE%/upload/system/engine
+        - %env.OPENCART_SOURCE%/upload/system/library
+        - %env.OPENCART_SOURCE%/upload/catalog/controller/mail
+        - %env.OPENCART_SOURCE%/upload/catalog/controller/extension/total
+        - %env.OPENCART_SOURCE%/upload/admin/model/localisation
+        - %env.OPENCART_SOURCE%/upload/admin/model/setting
+        - build/package/upload/system/library/lunixi3/sdk
+    tmpDir: build/phpstan

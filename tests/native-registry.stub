@@ -1,0 +1,10 @@
+<?php
+/** Corrects the original untyped registry's inaccurate string-only value documentation. */
+class Registry {
+    /**
+     * @param string $key
+     * @param mixed $value
+     * @return void
+     */
+    public function set($key, $value) {}
+}

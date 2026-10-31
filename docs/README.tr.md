@@ -2,6 +2,10 @@
 
 # OpenCart 3 için Lunixi Payments
 
+**Doğrulanmış güncel mağaza ZIP’i 0.1.3:** [`lunixi-opencart3-0.1.3.ocmod.zip`](https://github.com/Lunixi-Payment/lunixi-opencart3/releases/download/v0.1.3/lunixi-opencart3-0.1.3.ocmod.zip) · [SHA256SUMS](https://github.com/Lunixi-Payment/lunixi-opencart3/releases/download/v0.1.3/SHA256SUMS) · [Yayın v0.1.3](https://github.com/Lunixi-Payment/lunixi-opencart3/releases/tag/v0.1.3) · [Başarılı yayın CI koşumu](https://github.com/Lunixi-Payment/lunixi-opencart3/actions/runs/41242230824).
+
+Public ZIP SHA-256: `232da87c2601f5c935eecac33f8ca22dab472fef51c54c33a5e72e5bda26eb90`. İndirilen arşivin checksum, GitHub asset digest ve ZIP CRC kontrolleri 1 Kasım 2026 tarihinde doğrulandı. Otomatik GitHub kaynak arşivi yerine bu kurulum paketini kullanın.
+
 **0.1.3**, özgün **OpenCart 3.0.5.1** sipariş modeli için hazırlanmış yerel ödeme eklentisidir. 64 bit PHP **8.3+**, BCMath, cURL, JSON, Sodium, MySQLi ve tüm mağaza tablolarında **InnoDB** gerekir. Paket, ad alanı ayrılmış PHP SDK **0.29.6** içerir; mağazada Composer gerekmez.
 
 ## Kurulum
@@ -61,3 +65,5 @@ Varsayılan, mağaza içinde açılan gömülü Lunixi formudur. İsteğe bağl�
 Önceden açıkça seçilmiş yönlendirme ayarları korunur. Form modu, dönüş adresi, ön provizyon ve dil özgün ödeme isteğine bağlıdır; değiştirmek denemenin hash veya idempotency anahtarını sıfırlayamaz. Eski bir denemede backend ödeme adresi kayıtlı değilse yönlendirme güvenli biçimde durur; adres üretmek, geçmişi silmek veya yeni anahtar açmak yerine mevcut denemeyi uzlaştırın. Gömülü form korumalı tarayıcı yapılandırmasını kullanır. İmzalı webhook, doğrulanmış tahsilat kontrolleri ve bilgilendirici 3DS/çoklu kart dönüşleri korunur.
 
 0.1.3 paketi, yayımlanmış PHP SDK **0.29.6** ile yeniden derlenip ayrı izole MariaDB üzerinde doğrulandı: **11 yerel platform testi / 81 assertion** ve **21 ek HTTP kontrolü** geçti. Harici Lunixi transport'u sentetiktir; tam sepet arayüzü, canlı banka/CDN/3DS veya Marketplace onayı iddia edilmez. Yerel PHP sürümü 8.4.1'dir; SDK üst akıştaki PHP 8.5 cURL düzeltmesini içerir. Ayrıntılar [test kaydındadır](TESTING.md#013-sdk-refresh-acceptance).
+
+Doğrulanmış public 0.1.3 arşivinin PHP/JavaScript/template ve finansal runtime dosyaları yerel kabul ZIP’iyle eşleşir; yalnız dokümantasyon için koyu logo eklendi. Gerçek **OpenCart 3.0.5.1 / PHP 8.4.1 / MariaDB 11.8.6 / InnoDB** üzerinde **11 native test / 81 assertion**, **21 ek HTTP kontrolü** ve admin/CLI/dönüş kontrolleri geçti. Ek HTTP testi, değişmemiş widget’ı açıkça test amaçlı native parent controller ile yükler; tam sepet/tarayıcı kabulü değildir. Gateway sentetiktir; banka/3DS/CDN, SMTP veya Marketplace onayı iddia edilmez. [Kabul kapsamı](TESTING.md#013-sdk-refresh-acceptance).

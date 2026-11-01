@@ -2,15 +2,15 @@
 
 # OpenCart 3 için Lunixi Payments
 
-1.0.0 kurulum ZIP’i [GitHub sürümlerinde](https://github.com/Lunixi-Payment/lunixi-opencart3/releases) kullanılabilir olduğunda onu indirin ve aynı sürümün `SHA256SUMS` dosyasıyla doğrulayın. Paket PHP SDK 1.0.1 gerektirir. [Para sözleşmesi geçişini](../MIGRATION-1.0.md) uygulayın; 0.x ZIP’leri önceki sayısal para sözleşmesini kullanır.
+1.0.1 kurulum ZIP’ini [GitHub sürümlerinden](https://github.com/Lunixi-Payment/lunixi-opencart3/releases) indirin ve aynı sürümün `SHA256SUMS` dosyasıyla doğrulayın. Paket PHP SDK 1.0.1 gerektirir. [Para sözleşmesi geçişini](../MIGRATION-1.0.md) uygulayın; 0.x ZIP’leri önceki sayısal para sözleşmesini kullanır.
 
-**1.0.0**, özgün **OpenCart 3.0.5.1** sipariş modeli için hazırlanmış yerel ödeme eklentisidir. 64 bit PHP **8.3+**, BCMath, cURL, JSON, Sodium, MySQLi ve tüm mağaza tablolarında **InnoDB** gerekir. Paket, ad alanı ayrılmış PHP SDK **1.0.1** içerir; mağazada Composer gerekmez.
+**1.0.1**, özgün **OpenCart 3.0.5.1** sipariş modeli için hazırlanmış yerel ödeme eklentisidir. 64 bit PHP **8.3+**, BCMath, cURL, JSON, Sodium, MySQLi ve tüm mağaza tablolarında **InnoDB** gerekir. Paket, ad alanı ayrılmış PHP SDK **1.0.1** içerir; mağazada Composer gerekmez.
 
 ## Kurulum
 
 1. Dosya/veritabanı yedeği alın ve önce staging ortamında deneyin. OpenCart 3 varsayılan MyISAM tablolarını operatör onaylı bakım çalışmasıyla InnoDB yapmadan modülü açmayın; modül otomatik dönüşüm yapmaz.
 2. `php -r 'echo base64_encode(random_bytes(32)), PHP_EOL;'` ile ayrı sunucu anahtarı oluşturun. `LUNIXI_OPENCART_ENCRYPTION_KEY` ortam değişkenini web PHP ve CLI için tanımlayın; web kökü/veritabanı dışında saklayıp ayrıca yedekleyin.
-3. **`lunixi-opencart3-1.0.0.ocmod.zip`** dosyasını **Eklentiler → Yükleyici** üzerinden yükleyin, ardından **Ödemeler → Lunixi Payments** kurulumunu yapın. Paket çekirdek dosyalarını değiştirmez.
+3. **`lunixi-opencart3-1.0.1.ocmod.zip`** dosyasını **Eklentiler → Yükleyici** üzerinden yükleyin, ardından **Ödemeler → Lunixi Payments** kurulumunu yapın. Paket çekirdek dosyalarını değiştirmez.
 4. Yöneticiye eklentiyi görme/değiştirme; tahsilat, iade ve iptal için ayrıca `sale/order` değiştirme yetkisi verin.
 5. Lunixi ayarlarında mağazayı seçin. Merchant ID, Key ID, Ed25519 özel anahtarı ve webhook secret alanlarını doldurun. Anahtarlar şifreli saklanır; sayfa tekrar açıldığında boş kalır. Boş alanlar kayıtlı profili korur. Her mağazaya ayrı profil kullanın.
 6. Varsayılan **mağaza içi formu** kullanın veya backend ödeme adresine isteğe bağlı yönlendirmeyi seçin; ön provizyon ayrıca ayarlanabilir. Ödeme yöntemleri, uygun yemek kartları, alışveriş kredisi, taksit, sigorta ve çoklu kart Lunixi panelindeki form ayarlarından gelir; burada tekrar seçilmez.
@@ -44,7 +44,7 @@ php tools/check-artifact.php
 composer audit --working-dir=tools
 ```
 
-Yayımlanmamış ortak SDK'yı test etmek için yalnız derleme sırasında `SDK_SOURCE=/absolute/public-sdk-checkout` verilebilir. Bu yol ZIP'e yazılmaz. [Gerçek platform testleri](TESTING.md), [operasyon ve veritabanı hazırlığı](OPERATIONS.md), [güvenlik politikası](../SECURITY.md) ve [English README](../README.md) ayrıntıları içerir. Gerçek platform kabulü PHP 8.4.1/MariaDB 11 üzerinde, dış gateway yerine sentetik transport ile yapılır. Marketplace onayı veya canlı banka tahsilatı iddiası yoktur.
+Varsayılan derleme paket deposundan sabit PHP SDK 1.0.1 kullanır. ZIP içindeki SDK sürümü bu kesin bağımlılıktan türetilir ve Composer’ın çözdüğü paketle doğrulanır; modül sürümü `VERSION` dosyasından alınır. SDK geliştirme değişikliklerini denemek için yalnız derleme sırasında açıkça incelenmiş kaynak `SDK_SOURCE=/absolute/public-sdk-checkout` ile verilebilir. Bu yol ZIP'e yazılmaz. [Gerçek platform testleri](TESTING.md), [operasyon ve veritabanı hazırlığı](OPERATIONS.md), [güvenlik politikası](../SECURITY.md) ve [English README](../README.md) ayrıntıları içerir. Gerçek platform kabulü PHP 8.4.1/MariaDB 11 üzerinde, dış gateway yerine sentetik transport ile yapılır. Marketplace onayı veya canlı banka tahsilatı iddiası yoktur.
 
 Eklenti GPL-3.0-or-later, paketlenen PHP SDK MIT lisanslıdır.
 
@@ -62,9 +62,9 @@ Varsayılan, mağaza içinde açılan gömülü Lunixi formudur. İsteğe bağl�
 
 Önceden açıkça seçilmiş yönlendirme ayarları korunur. Form modu, dönüş adresi, ön provizyon ve dil özgün ödeme isteğine bağlıdır; değiştirmek denemenin hash veya idempotency anahtarını sıfırlayamaz. Eski bir denemede backend ödeme adresi kayıtlı değilse yönlendirme güvenli biçimde durur; adres üretmek, geçmişi silmek veya yeni anahtar açmak yerine mevcut denemeyi uzlaştırın. Gömülü form korumalı tarayıcı yapılandırmasını kullanır. İmzalı webhook, doğrulanmış tahsilat kontrolleri ve bilgilendirici 3DS/çoklu kart dönüşleri korunur.
 
-0.1.3 paketi, yayımlanmış PHP SDK **0.29.6** ile yeniden derlenip ayrı izole MariaDB üzerinde doğrulandı: **11 yerel platform testi / 81 assertion** ve **21 ek HTTP kontrolü** geçti. Harici Lunixi transport'u sentetiktir; tam sepet arayüzü, canlı banka/CDN/3DS veya Marketplace onayı iddia edilmez. Yerel PHP sürümü 8.4.1'dir; SDK üst akıştaki PHP 8.5 cURL düzeltmesini içerir. Ayrıntılar [test kaydındadır](TESTING.md#013-sdk-refresh-acceptance).
+**Tarihsel 0.1.3 kabulü:** Paket, yayımlanmış PHP SDK **0.29.6** ile yeniden derlenip ayrı izole MariaDB üzerinde doğrulandı: **11 yerel platform testi / 81 assertion** ve **21 ek HTTP kontrolü** geçti. Harici Lunixi transport'u sentetiktir; tam sepet arayüzü, canlı banka/CDN/3DS veya Marketplace onayı iddia edilmez. Yerel PHP sürümü 8.4.1'dir; SDK üst akıştaki PHP 8.5 cURL düzeltmesini içerir. Ayrıntılar [test kaydındadır](TESTING.md#013-sdk-refresh-acceptance).
 
-Doğrulanmış public 0.1.3 arşivinin PHP/JavaScript/template ve finansal runtime dosyaları yerel kabul ZIP’iyle eşleşir; yalnız dokümantasyon için koyu logo eklendi. Gerçek **OpenCart 3.0.5.1 / PHP 8.4.1 / MariaDB 11.8.6 / InnoDB** üzerinde **11 native test / 81 assertion**, **21 ek HTTP kontrolü** ve admin/CLI/dönüş kontrolleri geçti. Ek HTTP testi, değişmemiş widget’ı açıkça test amaçlı native parent controller ile yükler; tam sepet/tarayıcı kabulü değildir. Gateway sentetiktir; banka/3DS/CDN, SMTP veya Marketplace onayı iddia edilmez. [Kabul kapsamı](TESTING.md#013-sdk-refresh-acceptance).
+**Tarihsel yayın doğrulaması:** Public 0.1.3 arşivinin PHP/JavaScript/template ve finansal runtime dosyaları yerel kabul ZIP’iyle eşleşir; yalnız dokümantasyon için koyu logo eklendi. Gerçek **OpenCart 3.0.5.1 / PHP 8.4.1 / MariaDB 11.8.6 / InnoDB** üzerinde **11 native test / 81 assertion**, **21 ek HTTP kontrolü** ve admin/CLI/dönüş kontrolleri geçti. Ek HTTP testi, değişmemiş widget’ı açıkça test amaçlı native parent controller ile yükler; tam sepet/tarayıcı kabulü değildir. Gateway sentetiktir; banka/3DS/CDN, SMTP veya Marketplace onayı iddia edilmez. [Kabul kapsamı](TESTING.md#013-sdk-refresh-acceptance).
 
 ## Geçmiş yayın kanıtı
 

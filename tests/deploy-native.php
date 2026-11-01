@@ -5,8 +5,9 @@ $site = getenv('LUNIXI_TEST_SITE');
 if (!is_string($site) || !is_file($site . '/config.php')) {
     throw new RuntimeException('Disposable installed fixture required.');
 }
+$version = trim(file_get_contents(dirname(__DIR__) . '/VERSION'));
 $zip = new ZipArchive();
-if ($zip->open(dirname(__DIR__) . '/dist/lunixi-opencart3-1.0.0.ocmod.zip') !== true) {
+if ($zip->open(dirname(__DIR__) . '/dist/lunixi-opencart3-' . $version . '.ocmod.zip') !== true) {
     throw new RuntimeException('Build the merchant artifact first.');
 }
 for ($i = 0; $i < $zip->numFiles; $i++) {

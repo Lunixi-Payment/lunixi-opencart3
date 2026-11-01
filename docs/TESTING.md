@@ -1,5 +1,7 @@
 # Native acceptance
 
+**Historical verification receipts:** the 0.x package versions, test counts and checksums below remain evidence for those exact artifacts, not a current 1.0 installation target.
+
 **Historical verified merchant ZIP 0.1.3:** [`lunixi-opencart3-0.1.3.ocmod.zip`](https://github.com/Lunixi-Payment/lunixi-opencart3/releases/download/v0.1.3/lunixi-opencart3-0.1.3.ocmod.zip) · [SHA256SUMS](https://github.com/Lunixi-Payment/lunixi-opencart3/releases/download/v0.1.3/SHA256SUMS) · [Release v0.1.3](https://github.com/Lunixi-Payment/lunixi-opencart3/releases/tag/v0.1.3) · [Passing release CI](https://github.com/Lunixi-Payment/lunixi-opencart3/actions/runs/41242230824).
 
 Public ZIP SHA-256: `232da87c2601f5c935eecac33f8ca22dab472fef51c54c33a5e72e5bda26eb90`. The downloaded archive passed public checksum, GitHub asset digest and ZIP CRC checks on 1 November 2026.
